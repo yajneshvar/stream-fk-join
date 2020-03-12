@@ -1,0 +1,40 @@
+{
+  "type": "record",
+  "name": "TradeVehicle",
+  "namespace": "com.example.demo.avro",
+  "doc": "AggregateTrade avro schema.",
+  "fields": [
+    {
+      "name": "tradeId",
+      "type": [
+        "null",
+        "long"
+      ],
+      "default": null
+    },
+    {
+      "name": "vehicleId",
+      "type": [
+        "null",
+        "long"
+      ],
+      "default": null
+    },
+    {
+      "name": "tradePayload",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+        },
+      "default": ""
+    },
+    {
+      "name": "vehiclePayload",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+        },
+      "default": ""
+    }
+  ]
+}
