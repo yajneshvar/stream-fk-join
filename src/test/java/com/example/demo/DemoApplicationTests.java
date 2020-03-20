@@ -33,7 +33,7 @@ class DemoApplicationTests {
 
 		public KStream<Long, TradeVehicle> process(KTable<Long, Trade> tradeKTable, KTable<Long, Vehicle> vehicleKTable) {
 
-			return tradeKTable.leftJoin(vehicleKTable, (trade, vehicle) -> {
+			return tradeKTable.leftJoin(vehicleKTable, Trade::getVehicleId,(trade, vehicle) -> {
 				var result = TradeVehicle.newBuilder();
 				var tradeVehicle = result.setTradePayload(trade.getTradePayload())
 						.setTradeId(trade.getId())
@@ -113,6 +113,7 @@ class DemoApplicationTests {
 
 		var trade = Trade.newBuilder()
 					.setTradePayload("trade1")
+					.setVehicleId(1l)
 					.setId(1l).build();
 
 		inputTopic.pipeInput(1l, trade);

@@ -48,6 +48,26 @@ public class DemoApplication {
 
 	}
 
+	@StreamListener
+	@SendTo("yajTradeVehicleInnerJoin")
+	public KStream<Long, TradeVehicle> processInner(@Input("yajTradeIn") KTable<Long, Trade> tradeKTable, @Input("yajVehicleIn") KTable<Long, Vehicle> vehicleKTable ) {
+
+		return tradeKTable.join(vehicleKTable, trade -> trade.getVehicleId(), (trade, vehicle) -> {
+			var builder = TradeVehicle.newBuilder();
+			if (trade != null) {
+				builder.setTradeId(trade.getId())
+						.setTradePayload(trade.getTradePayload());
+			}
+			if (vehicle != null) {
+				builder.setVehicleId(vehicle.getId())
+						.setVehiclePayload(vehicle.getVehiclePayload());
+			}
+
+			return builder.build();
+		}).toStream();
+
+	}
+
 
 	interface KafkaBindings {
 
@@ -57,8 +77,17 @@ public class DemoApplication {
 		@Input("yajVehicle")
 		KTable<Long, Vehicle> vehicleKtable();
 
+		@Input("yajTradeIn")
+		KTable<Long, Trade> tradeKtableIn();
+
+		@Input("yajVehicleIn")
+		KTable<Long, Vehicle> vehicleKtableIn();
+
 		@Output("yajTradeVehicle")
 		KStream<Long, TradeVehicle> tradeVehicle();
+
+		@Output("yajTradeVehicleInnerJoin")
+		KStream<Long, TradeVehicle> tradeVehicleInnerJoin();
 	}
 
 
